@@ -9,15 +9,19 @@
 		},
 		{
 			"ImportPath": "github.com/bitrise-io/go-utils/colorstring",
-			"Rev": "1e735b52c32f8e35df52f436e3ad63ae155f325e"
+			"Rev": "8e2ce64ed8573f298c6e50171229b6751d05396e"
 		},
 		{
 			"ImportPath": "github.com/bitrise-io/go-utils/fileutil",
-			"Rev": "1e735b52c32f8e35df52f436e3ad63ae155f325e"
+			"Rev": "8e2ce64ed8573f298c6e50171229b6751d05396e"
 		},
 		{
 			"ImportPath": "github.com/bitrise-io/go-utils/pathutil",
-			"Rev": "1e735b52c32f8e35df52f436e3ad63ae155f325e"
+			"Rev": "8e2ce64ed8573f298c6e50171229b6751d05396e"
+		},
+		{
+			"ImportPath": "github.com/bitrise-io/go-utils/sliceutil",
+			"Rev": "8e2ce64ed8573f298c6e50171229b6751d05396e"
 		},
 		{
 			"ImportPath": "github.com/codegangsta/cli",
