@@ -25,7 +25,7 @@ func before(c *cli.Context) error {
 		log.SetLevel(logLevel)
 	}
 
-	WorkWithPlantID = c.String(PlantIDKey)
+	WorkWithPlantID = c.String(PlantKey)
 	if WorkWithPlantID == "" {
 		WorkWithZone = c.String(ZoneKey)
 		if WorkWithZone != "" {

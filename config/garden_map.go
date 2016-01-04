@@ -17,22 +17,25 @@ type PlantModel struct {
 	Zones []string `json:"zones" yaml:"zones"`
 }
 
+// PlantsMap ...
+type PlantsMap map[string]PlantModel
+
 // GardenMapModel ...
 type GardenMapModel struct {
 	Plants map[string]PlantModel `json:"plants" yaml:"plants"`
 }
 
 // FilteredPlants ...
-func (gardenMap GardenMapModel) FilteredPlants(plantID, zone string) map[string]PlantModel {
+func (gardenMap GardenMapModel) FilteredPlants(plantID, zone string) PlantsMap {
 	if plantID != "" {
 		plantModel, isFound := gardenMap.Plants[plantID]
 		if isFound {
-			return map[string]PlantModel{
+			return PlantsMap{
 				plantID: plantModel,
 			}
 		}
 		// not found by ID
-		return map[string]PlantModel{}
+		return PlantsMap{}
 	}
 
 	if zone != "" {
@@ -43,8 +46,8 @@ func (gardenMap GardenMapModel) FilteredPlants(plantID, zone string) map[string]
 	return gardenMap.Plants
 }
 
-func (gardenMap GardenMapModel) plantsFilteredByZone(zone string) map[string]PlantModel {
-	filtered := map[string]PlantModel{}
+func (gardenMap GardenMapModel) plantsFilteredByZone(zone string) PlantsMap {
+	filtered := PlantsMap{}
 	for plantID, plantModel := range gardenMap.Plants {
 		if sliceutil.IndexOfStringInSlice(zone, plantModel.Zones) >= 0 {
 			filtered[plantID] = plantModel

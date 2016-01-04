@@ -7,21 +7,34 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	"github.com/bitrise-io/go-utils/colorstring"
+	"github.com/bitrise-io/go-utils/pathutil"
 	"github.com/bitrise-tools/garden/config"
 )
 
+func checkSeedDir(gardenDirAbsPth, seedPath string) (string, error) {
+	seedFullPth := path.Join(gardenDirAbsPth, "seeds", seedPath)
+	isExist, err := pathutil.IsDirExists(seedFullPth)
+	if err != nil {
+		return "", err
+	}
+	if !isExist {
+		return "", fmt.Errorf("No Seed directory found at path: %s", seedFullPth)
+	}
+	return seedFullPth, nil
+}
+
 // loadGardenMap ..
-func loadGardenMap() (config.GardenMapModel, error) {
+func loadGardenMap() (config.GardenMapModel, string, error) {
 	relPth, absPth, err := config.FindGardenDirPath()
 	if err != nil {
-		return config.GardenMapModel{}, fmt.Errorf("Failed to find Garden directory: %s", err)
+		return config.GardenMapModel{}, "", fmt.Errorf("Failed to find Garden directory: %s", err)
 	}
 	log.Printf("=> Using Garden directory: %s (abs path: %s)", colorstring.Green(relPth), absPth)
 
 	gardenMapPth := path.Join(absPth, "map.yml")
 	gardenMap, err := config.CreateGardenMapModelFromYMLFile(gardenMapPth)
 	if err != nil {
-		return config.GardenMapModel{}, fmt.Errorf("Failed to load Garden Map (path:%s) with error: %s", gardenMapPth, err)
+		return config.GardenMapModel{}, "", fmt.Errorf("Failed to load Garden Map (path:%s) with error: %s", gardenMapPth, err)
 	}
-	return gardenMap, nil
+	return gardenMap, absPth, nil
 }

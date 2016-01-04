@@ -23,8 +23,8 @@ const (
 
 	// ZoneKey ...
 	ZoneKey = "zone"
-	// PlantIDKey ...
-	PlantIDKey = "plant-id"
+	// PlantKey ...
+	PlantKey = "plant"
 )
 
 var (
@@ -32,7 +32,7 @@ var (
 		{
 			Name:   "grow",
 			Usage:  "Grow your plants!",
-			Action: plant,
+			Action: grow,
 		},
 		{
 			Name:   "reap",
@@ -59,7 +59,7 @@ var (
 			Usage: "Zone filter: work only on plants which belong to this zone",
 		},
 		cli.StringFlag{
-			Name:  PlantIDKey,
+			Name:  PlantKey,
 			Value: "",
 			Usage: "Plant ID filter: work only on the specified plant",
 		},
