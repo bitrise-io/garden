@@ -9,10 +9,10 @@ import (
 	"github.com/codegangsta/cli"
 )
 
-func printGardenMapView(gardenMap config.GardenMapModel) {
+func printGardenMapView(gardenMap config.GardenMapModel, plantIDFilter string, plantZoneFilter string) {
 	fmt.Println()
 	log.Println("=== Plants ===")
-	for plantID, plantModel := range gardenMap.Plants {
+	for plantID, plantModel := range gardenMap.FilteredPlants(plantIDFilter, plantZoneFilter) {
 		log.Println("🌱 ", colorstring.Green(plantID))
 		log.Println("   path:", plantModel.Path)
 		log.Println("   seed:", plantModel.Seed)
@@ -37,5 +37,5 @@ func view(c *cli.Context) {
 		log.Fatalf("Failed to load Garden Map: %s", err)
 	}
 
-	printGardenMapView(gardenMap)
+	printGardenMapView(gardenMap, WorkWithPlantID, WorkWithZone)
 }

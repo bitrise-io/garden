@@ -5,6 +5,7 @@ import (
 
 	"github.com/bitrise-io/go-utils/fileutil"
 	"github.com/bitrise-io/go-utils/pathutil"
+	"github.com/bitrise-io/go-utils/sliceutil"
 	"gopkg.in/yaml.v2"
 )
 
@@ -19,6 +20,37 @@ type PlantModel struct {
 // GardenMapModel ...
 type GardenMapModel struct {
 	Plants map[string]PlantModel `json:"plants" yaml:"plants"`
+}
+
+// FilteredPlants ...
+func (gardenMap GardenMapModel) FilteredPlants(plantID, zone string) map[string]PlantModel {
+	if plantID != "" {
+		plantModel, isFound := gardenMap.Plants[plantID]
+		if isFound {
+			return map[string]PlantModel{
+				plantID: plantModel,
+			}
+		}
+		// not found by ID
+		return map[string]PlantModel{}
+	}
+
+	if zone != "" {
+		return gardenMap.plantsFilteredByZone(zone)
+	}
+
+	// no filter
+	return gardenMap.Plants
+}
+
+func (gardenMap GardenMapModel) plantsFilteredByZone(zone string) map[string]PlantModel {
+	filtered := map[string]PlantModel{}
+	for plantID, plantModel := range gardenMap.Plants {
+		if sliceutil.IndexOfStringInSlice(zone, plantModel.Zones) >= 0 {
+			filtered[plantID] = plantModel
+		}
+	}
+	return filtered
 }
 
 func checkGardenDirPath(relPth string) (string, string, error) {
