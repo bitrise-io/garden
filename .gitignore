@@ -1,3 +1,4 @@
 .garden/
 .bitrise*
 _tmp
+_bin
