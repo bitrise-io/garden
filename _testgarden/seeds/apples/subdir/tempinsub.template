@@ -1,0 +1,5 @@
+This is a templated file, in a sub directory
+
+Temp: {{if isOne 1}} T1 {{end}}|
+Temp: {{if isOne 2}} T2 {{end}}|
+Value of MyVar1: {{ var "MyVar1" }}

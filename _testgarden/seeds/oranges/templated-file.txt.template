@@ -1,0 +1,5 @@
+This is a templated file.
+
+Temp: {{if .TestBool}} T1 {{end}}|
+Value of MyVar1: {{ var "MyVar1" }}
+Value of MyVar2: {{ var "MyVar2" }}
