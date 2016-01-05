@@ -1,4 +1,4 @@
-This is a templated file.
+Apples - this is a templated file.
 
 Temp: {{if .TestBool}} T1 {{end}}|
 Value of MyVar1: {{ var "MyVar1" }}

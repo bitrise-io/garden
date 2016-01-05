@@ -1,6 +1,6 @@
 plants:
   apple-1:
-    path: PLANTROOT/plantdir-1
+    path: PLANTROOT/apple-1-dir
     seed: apples
     vars:
       MyVar1: "my value 1"
@@ -8,7 +8,7 @@ plants:
     - apples
     - test
   orange-1:
-    path: PLANTROOT/plantdir-2
+    path: PLANTROOT/orange-1-dir
     seed: oranges
     vars:
       MyVar1: "my value - for var 1"

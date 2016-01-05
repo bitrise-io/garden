@@ -2,11 +2,12 @@ package cli
 
 import (
 	"fmt"
-	"log"
 	"os"
+	"path"
 	"strings"
 	"testing"
 
+	"github.com/bitrise-io/go-utils/fileutil"
 	"github.com/bitrise-io/go-utils/pathutil"
 	"github.com/bitrise-tools/garden/config"
 	"github.com/stretchr/testify/require"
@@ -34,6 +35,12 @@ func fixPlantPathForTest(gardenMap config.GardenMapModel, plantrootPath string) 
 	return gardenMap
 }
 
+func testFileContent(t *testing.T, filePth, expectedContent string) {
+	filecont, err := fileutil.ReadStringFromFile(filePth)
+	require.NoError(t, err)
+	require.Equal(t, expectedContent, filecont)
+}
+
 func Test_growPlants(t *testing.T) {
 	gardenMap, absTestGardenDirPath, err := loadTestGardenMap()
 	require.NoError(t, err)
@@ -53,8 +60,43 @@ func Test_growPlants(t *testing.T) {
 	require.NoError(t, err)
 
 	gardenMap = fixPlantPathForTest(gardenMap, absPlantRootPath)
-	log.Printf("-> gardenMap: %#v", gardenMap)
+	t.Logf("-> gardenMap: %#v", gardenMap)
 
 	err = growPlants(absTestGardenDirPath, gardenMap.Plants)
 	require.NoError(t, err)
+
+	// Apple-1
+	// test the generated files
+	appleOneDirPth := path.Join(absPlantRootPath, "apple-1-dir")
+	// fix file, no template content
+	testFileContent(t, path.Join(appleOneDirPth, "fix-file.txt"), `Apples - this is a non template file.
+`)
+	// template 1, in root dir of plant
+	testFileContent(t, path.Join(appleOneDirPth, "templated-file.txt"), `Apples - this is a templated file.
+
+Temp:  T1 |
+Value of MyVar1: my value 1
+`)
+	// template 2, in a subdir of plant
+	testFileContent(t, path.Join(appleOneDirPth, "subdir", "tempinsub"), `Apples - this is a templated file, in a sub directory.
+
+Temp:  T1 |
+Temp: |
+Value of MyVar1: my value 1
+`)
+
+	// Orange-1
+	// test the generated files
+	orangeOneDirPth := path.Join(absPlantRootPath, "orange-1-dir")
+	// fix file, no template content
+	testFileContent(t, path.Join(orangeOneDirPth, "fix-file.txt"), `Oranges - this is a non template file.
+`)
+	// template 1, in root dir of plant
+	testFileContent(t, path.Join(orangeOneDirPth, "templated-file.txt"), `Oranges - this is a templated file.
+
+Temp:  T1 |
+Value of MyVar1: my value - for var 1
+Value of MyVar2: var 2
+`)
+
 }
