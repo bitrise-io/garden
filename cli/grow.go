@@ -158,7 +158,11 @@ func grow(c *cli.Context) {
 		log.Fatalf("Failed to load Garden Map: %s", err)
 	}
 
-	if err := growPlants(gardenDirAbsPth, gardenMap.FilteredPlants(WorkWithPlantID, WorkWithZone)); err != nil {
+	plantsToGrow := gardenMap.FilteredPlants(WorkWithPlantID, WorkWithZone)
+	if len(plantsToGrow) < 1 {
+		log.Fatalln("No plants to grow!")
+	}
+	if err := growPlants(gardenDirAbsPth, plantsToGrow); err != nil {
 		log.Fatalf("Failed to grow plants: %s", err)
 	}
 }
