@@ -1,6 +1,9 @@
 {
 	"ImportPath": "github.com/bitrise-tools/garden",
 	"GoVersion": "go1.5",
+	"Packages": [
+		"./..."
+	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/Sirupsen/logrus",
@@ -8,20 +11,28 @@
 			"Rev": "446d1c146faa8ed3f4218f056fcd165f6bcfda81"
 		},
 		{
+			"ImportPath": "github.com/bitrise-io/go-utils/cmdex",
+			"Rev": "91d23aedf33f0cedf4aec23ab717fd3e053e6cec"
+		},
+		{
 			"ImportPath": "github.com/bitrise-io/go-utils/colorstring",
-			"Rev": "8e2ce64ed8573f298c6e50171229b6751d05396e"
+			"Rev": "91d23aedf33f0cedf4aec23ab717fd3e053e6cec"
 		},
 		{
 			"ImportPath": "github.com/bitrise-io/go-utils/fileutil",
-			"Rev": "8e2ce64ed8573f298c6e50171229b6751d05396e"
+			"Rev": "91d23aedf33f0cedf4aec23ab717fd3e053e6cec"
 		},
 		{
 			"ImportPath": "github.com/bitrise-io/go-utils/pathutil",
-			"Rev": "8e2ce64ed8573f298c6e50171229b6751d05396e"
+			"Rev": "91d23aedf33f0cedf4aec23ab717fd3e053e6cec"
 		},
 		{
 			"ImportPath": "github.com/bitrise-io/go-utils/sliceutil",
-			"Rev": "8e2ce64ed8573f298c6e50171229b6751d05396e"
+			"Rev": "91d23aedf33f0cedf4aec23ab717fd3e053e6cec"
+		},
+		{
+			"ImportPath": "github.com/bitrise-io/go-utils/templateutil",
+			"Rev": "91d23aedf33f0cedf4aec23ab717fd3e053e6cec"
 		},
 		{
 			"ImportPath": "github.com/codegangsta/cli",
