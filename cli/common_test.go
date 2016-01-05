@@ -24,4 +24,17 @@ func Test_createAvailableTemplateFunctions(t *testing.T) {
 		createAvailableTemplateFunctions(plantVars))
 	require.Error(t, err)
 	require.Equal(t, err.Error(), "template: :1:3: executing \"\" at <var \"MyKeyDoesntExis...>: error calling var: No value found for key: MyKeyDoesntExist")
+
+	// fn: isOne
+	t.Log("fn: isOne - should be true")
+	evaluatedContent, err = templateutil.EvaluateTemplateStringToString(`{{ isOne 1 }}`, inventory,
+		createAvailableTemplateFunctions(plantVars))
+	require.NoError(t, err)
+	require.Equal(t, "true", evaluatedContent)
+
+	t.Log("fn: isOne - should be false")
+	evaluatedContent, err = templateutil.EvaluateTemplateStringToString(`{{ isOne 2 }}`, inventory,
+		createAvailableTemplateFunctions(plantVars))
+	require.NoError(t, err)
+	require.Equal(t, "false", evaluatedContent)
 }
