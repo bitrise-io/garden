@@ -154,7 +154,7 @@ func growPlants(gardenDirAbsPth string, plantsMap config.PlantsMap) error {
 func grow(c *cli.Context) {
 	log.Infoln("Grow")
 
-	gardenMap, gardenDirAbsPth, err := loadGardenMap()
+	gardenMap, gardenDirAbsPth, err := loadGardenMap("")
 	if err != nil {
 		log.Fatalf("Failed to load Garden Map: %s", err)
 	}

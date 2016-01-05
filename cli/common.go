@@ -41,17 +41,33 @@ func checkSeedDir(gardenDirAbsPth, seedPath string) (string, error) {
 }
 
 // loadGardenMap ..
-func loadGardenMap() (config.GardenMapModel, string, error) {
-	relPth, absPth, err := config.FindGardenDirPath()
-	if err != nil {
-		return config.GardenMapModel{}, "", fmt.Errorf("Failed to find Garden directory: %s", err)
-	}
-	log.Printf("=> Using Garden directory: %s (abs path: %s)", colorstring.Green(relPth), absPth)
+//  gardenDirPath is optional, if provided will be used as the Garden Dir path
+//  if not provided the standard .garden dir paths will be checked
+func loadGardenMap(gardenDirPath string) (config.GardenMapModel, string, error) {
+	relPath := ""
+	absPath := ""
 
-	gardenMapPth := path.Join(absPth, "map.yml")
+	if gardenDirPath != "" {
+		relPath = gardenDirPath
+		apth, err := pathutil.AbsPath(gardenDirPath)
+		if err != nil {
+			return config.GardenMapModel{}, "", fmt.Errorf("Failed to get Absolute path of provided Garden Dir (path:%s), error: %s", gardenDirPath, err)
+		}
+		absPath = apth
+	} else {
+		rpth, apth, err := config.FindGardenDirPath()
+		if err != nil {
+			return config.GardenMapModel{}, "", fmt.Errorf("Failed to find Garden directory: %s", err)
+		}
+		relPath = rpth
+		absPath = apth
+	}
+	log.Printf("=> Using Garden directory: %s (abs path: %s)", colorstring.Green(relPath), absPath)
+
+	gardenMapPth := path.Join(absPath, "map.yml")
 	gardenMap, err := config.CreateGardenMapModelFromYMLFile(gardenMapPth)
 	if err != nil {
 		return config.GardenMapModel{}, "", fmt.Errorf("Failed to load Garden Map (path:%s) with error: %s", gardenMapPth, err)
 	}
-	return gardenMap, absPth, nil
+	return gardenMap, absPath, nil
 }
