@@ -6,10 +6,20 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 
+	"text/template"
+
 	"github.com/bitrise-io/go-utils/colorstring"
 	"github.com/bitrise-io/go-utils/pathutil"
 	"github.com/bitrise-tools/garden/config"
 )
+
+func createAvailableTemplateFunctions() template.FuncMap {
+	return template.FuncMap{
+		"isOne": func(i int) bool {
+			return i == 1
+		},
+	}
+}
 
 func checkSeedDir(gardenDirAbsPth, seedPath string) (string, error) {
 	seedFullPth := path.Join(gardenDirAbsPth, "seeds", seedPath)
