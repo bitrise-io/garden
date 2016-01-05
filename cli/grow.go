@@ -31,7 +31,8 @@ func evaluateAndReplaceTemplateFile(templateFilePath string, templateInventory G
 	if err != nil {
 		return fmt.Errorf("Failed to read template file (path:%s), error: %s", templateFilePath, err)
 	}
-	evaluatedContent, err := templateutil.EvaluateTemplateStringToString(fileContent, templateInventory, createAvailableTemplateFunctions())
+	evaluatedContent, err := templateutil.EvaluateTemplateStringToString(fileContent, templateInventory,
+		createAvailableTemplateFunctions(templateInventory.Vars))
 	if err != nil {
 		return fmt.Errorf("Failed to evaluate template (path:%s), error: %s", templateFilePath, err)
 	}
@@ -54,7 +55,7 @@ func evaluateAndReplaceTemplateFile(templateFilePath string, templateInventory G
 	return nil
 }
 
-func replaceTemplateFilesInDir(dirPth string) error {
+func replaceTemplateFilesInDir(dirPth string, plantVars map[string]string) error {
 	templateFilePaths := []string{}
 	err := filepath.Walk(dirPth, func(pth string, f os.FileInfo, err error) error {
 		if f.Mode().IsDir() {
@@ -74,7 +75,7 @@ func replaceTemplateFilesInDir(dirPth string) error {
 
 	log.Infoln(colorstring.Cyan("-> templateFilePaths:"), templateFilePaths)
 
-	templateInventory := GrowInventoryModel{TestBool: true}
+	templateInventory := GrowInventoryModel{TestBool: true, Vars: plantVars}
 
 	for _, aTemplateFilePth := range templateFilePaths {
 		log.Infoln(colorstring.Cyan("-> Evaluating and replacing template file:"), aTemplateFilePth)
@@ -111,7 +112,7 @@ func growPlant(gardenDirAbsPth, plantID string, plantModel config.PlantModel) er
 	}
 
 	log.Println("--> Handling templates ...")
-	if err := replaceTemplateFilesInDir(tmpSeedPth); err != nil {
+	if err := replaceTemplateFilesInDir(tmpSeedPth, plantModel.Vars); err != nil {
 		return fmt.Errorf("Failed to handle templates in temp seed dir (path:%s), error: %s", tmpSeedPth, err)
 	}
 

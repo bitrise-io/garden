@@ -13,10 +13,17 @@ import (
 	"github.com/bitrise-tools/garden/config"
 )
 
-func createAvailableTemplateFunctions() template.FuncMap {
+func createAvailableTemplateFunctions(plantVars map[string]string) template.FuncMap {
 	return template.FuncMap{
 		"isOne": func(i int) bool {
 			return i == 1
+		},
+		"var": func(key string) (string, error) {
+			val, isFound := plantVars[key]
+			if !isFound {
+				return "", fmt.Errorf("No value found for key: %s", key)
+			}
+			return val, nil
 		},
 	}
 }

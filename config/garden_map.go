@@ -11,10 +11,10 @@ import (
 
 // PlantModel ...
 type PlantModel struct {
-	Path  string   `json:"path" yaml:"path"`
-	Seed  string   `json:"seed" yaml:"seed"`
-	Vars  []string `json:"vars" yaml:"vars"`
-	Zones []string `json:"zones" yaml:"zones"`
+	Path  string            `json:"path" yaml:"path"`
+	Seed  string            `json:"seed" yaml:"seed"`
+	Vars  map[string]string `json:"vars" yaml:"vars"`
+	Zones []string          `json:"zones" yaml:"zones"`
 }
 
 // PlantsMap ...
