@@ -121,6 +121,8 @@ workflows:
             set -e
             set -x
 
+            rm -rf ./_bin/tmp-bins/
+
             export ARCH=x86_64
             export GOARCH=amd64
 
