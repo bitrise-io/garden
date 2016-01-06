@@ -16,25 +16,17 @@ import (
 	"github.com/codegangsta/cli"
 )
 
-// GrowInventoryModel ...
-type GrowInventoryModel struct {
-	Vars      map[string]string
-	TestBool  bool
-	PlantID   string
-	PlantPath string
-}
-
 // evaluateAndReplaceTemplateFile ...
 //  it'll evalutate the content of the template file
 //  and then write it into a new file, without the .template extension
 //  and remove the original template file
-func evaluateAndReplaceTemplateFile(templateFilePath string, templateInventory GrowInventoryModel) error {
+func evaluateAndReplaceTemplateFile(templateFilePath string, templateInventory GardenTemplateInventoryModel) error {
 	fileContent, err := fileutil.ReadStringFromFile(templateFilePath)
 	if err != nil {
 		return fmt.Errorf("Failed to read template file (path:%s), error: %s", templateFilePath, err)
 	}
 	evaluatedContent, err := templateutil.EvaluateTemplateStringToString(fileContent, templateInventory,
-		createAvailableTemplateFunctions(templateInventory.Vars))
+		createAvailableTemplateFunctions(templateInventory))
 	if err != nil {
 		return fmt.Errorf("Failed to evaluate template (path:%s), error: %s", templateFilePath, err)
 	}
@@ -57,7 +49,7 @@ func evaluateAndReplaceTemplateFile(templateFilePath string, templateInventory G
 	return nil
 }
 
-func replaceTemplateFilesInDir(dirPth string, templateInventory GrowInventoryModel) error {
+func replaceTemplateFilesInDir(dirPth string, templateInventory GardenTemplateInventoryModel) error {
 	templateFilePaths := []string{}
 	err := filepath.Walk(dirPth, func(pth string, f os.FileInfo, err error) error {
 		if f.Mode().IsDir() {
@@ -126,7 +118,7 @@ func growPlant(plantID string, gardenMap config.GardenMapModel, gardenDirAbsPth 
 	if err != nil {
 		return fmt.Errorf("growPlant: failed to collect Vars for Plant (id: %s), error: %s", plantID, err)
 	}
-	templateInventory := GrowInventoryModel{
+	templateInventory := GardenTemplateInventoryModel{
 		TestBool:  true,
 		Vars:      collectedPlantVars,
 		PlantID:   plantID,

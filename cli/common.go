@@ -9,15 +9,29 @@ import (
 	"github.com/bitrise-io/go-utils/pathutil"
 )
 
-func createAvailableTemplateFunctions(plantVars map[string]string) template.FuncMap {
+// GardenTemplateInventoryModel ...
+type GardenTemplateInventoryModel struct {
+	Vars      map[string]string
+	TestBool  bool
+	PlantID   string
+	PlantPath string
+}
+
+func createAvailableTemplateFunctions(inventory GardenTemplateInventoryModel) template.FuncMap {
 	return template.FuncMap{
 		"isOne": func(i int) bool {
 			return i == 1
 		},
 		"var": func(key string) (string, error) {
-			val, isFound := plantVars[key]
+			val, isFound := inventory.Vars[key]
 			if !isFound {
 				return "", fmt.Errorf("No value found for key: %s", key)
+			}
+			return val, nil
+		},
+		"notEmpty": func(val string) (string, error) {
+			if val == "" {
+				return "", fmt.Errorf("Value was empty")
 			}
 			return val, nil
 		},
