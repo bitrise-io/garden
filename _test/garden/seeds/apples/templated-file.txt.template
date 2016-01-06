@@ -4,3 +4,4 @@ Temp: {{if .TestBool}} T1 {{end}}|
 Value of MyVar1: {{ var "MyVar1" }}
 IsItAFruit: {{ var "IsItAFruit" }}
 IsApples: {{ var "IsApples" }}
+PlantID: {{ .PlantID }}

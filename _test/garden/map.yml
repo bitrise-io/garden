@@ -1,6 +1,6 @@
 plants:
   apple-1:
-    path: PLANTROOT/apple-1-dir
+    path: PLANTROOT/$_GARDEN_PLANT_ID-dir
     seed: apples
     vars:
       MyVar1: "my value - for var 1"

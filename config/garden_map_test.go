@@ -45,3 +45,23 @@ func Test_GardenMapModel_GetAllVarsForPlant(t *testing.T) {
 		},
 		allVars)
 }
+
+func Test_PlantModel_ExpandedPath(t *testing.T) {
+	t.Log("Simple Path")
+	plant := PlantModel{
+		Path: "abc/def",
+	}
+	require.Equal(t, "abc/def", plant.ExpandedPath("PLANT1"))
+
+	t.Log("Single expand")
+	plant = PlantModel{
+		Path: "abc/$_GARDEN_PLANT_ID",
+	}
+	require.Equal(t, "abc/PLANT1", plant.ExpandedPath("PLANT1"))
+
+	t.Log("Multiple expands")
+	plant = PlantModel{
+		Path: "abc/$_GARDEN_PLANT_ID/a/$_GARDEN_PLANT_ID",
+	}
+	require.Equal(t, "abc/PLANT1/a/PLANT1", plant.ExpandedPath("PLANT1"))
+}

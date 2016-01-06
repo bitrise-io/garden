@@ -20,6 +20,7 @@ import (
 type GrowInventoryModel struct {
 	Vars     map[string]string
 	TestBool bool
+	PlantID  string
 }
 
 // evaluateAndReplaceTemplateFile ...
@@ -55,7 +56,7 @@ func evaluateAndReplaceTemplateFile(templateFilePath string, templateInventory G
 	return nil
 }
 
-func replaceTemplateFilesInDir(dirPth string, plantVars map[string]string) error {
+func replaceTemplateFilesInDir(dirPth string, templateInventory GrowInventoryModel) error {
 	templateFilePaths := []string{}
 	err := filepath.Walk(dirPth, func(pth string, f os.FileInfo, err error) error {
 		if f.Mode().IsDir() {
@@ -74,8 +75,6 @@ func replaceTemplateFilesInDir(dirPth string, plantVars map[string]string) error
 	}
 
 	log.Infoln(colorstring.Cyan("-> templateFilePaths:"), templateFilePaths)
-
-	templateInventory := GrowInventoryModel{TestBool: true, Vars: plantVars}
 
 	for _, aTemplateFilePth := range templateFilePaths {
 		log.Infoln(colorstring.Cyan("-> Evaluating and replacing template file:"), aTemplateFilePth)
@@ -117,18 +116,25 @@ func growPlant(plantID string, gardenMap config.GardenMapModel, gardenDirAbsPth 
 	}
 
 	log.Println("--> Handling templates ...")
-	allPlantVars, err := gardenMap.CollectAllVarsForPlant(plantID)
+	collectedPlantVars, err := gardenMap.CollectAllVarsForPlant(plantID)
 	if err != nil {
 		return fmt.Errorf("growPlant: failed to collect Vars for Plant (id: %s), error: %s", plantID, err)
 	}
-	if err := replaceTemplateFilesInDir(tmpSeedPth, allPlantVars); err != nil {
+	templateInventory := GrowInventoryModel{
+		TestBool: true,
+		Vars:     collectedPlantVars,
+		PlantID:  plantID,
+	}
+
+	if err := replaceTemplateFilesInDir(tmpSeedPth, templateInventory); err != nil {
 		return fmt.Errorf("Failed to handle templates in temp seed dir (path:%s), error: %s", tmpSeedPth, err)
 	}
 
 	log.Println("--> Moving plant to it's final place in the garden ...")
-	absPlantPath, err := pathutil.AbsPath(plantModel.Path)
+	expandedPlantPath := plantModel.ExpandedPath(plantID)
+	absPlantPath, err := pathutil.AbsPath(expandedPlantPath)
 	if err != nil {
-		return fmt.Errorf("Failed to get Absolute path of plant (path:%s), error: %s", plantModel.Path, err)
+		return fmt.Errorf("Failed to get Absolute path of plant (path:%s), error: %s", expandedPlantPath, err)
 	}
 	log.Println("    Plant's final place: ", absPlantPath)
 	// only content of dir

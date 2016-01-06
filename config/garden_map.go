@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"path"
+	"strings"
 
 	"github.com/bitrise-io/go-utils/colorstring"
 	"github.com/bitrise-io/go-utils/fileutil"
@@ -36,6 +37,11 @@ type PlantsMap map[string]PlantModel
 type GardenMapModel struct {
 	Plants map[string]PlantModel `json:"plants" yaml:"plants"`
 	Zones  map[string]ZoneModel  `json:"zones" yaml:"zones"`
+}
+
+// ExpandedPath ...
+func (plant PlantModel) ExpandedPath(plantID string) string {
+	return strings.Replace(plant.Path, "$_GARDEN_PLANT_ID", plantID, -1)
 }
 
 // CollectAllVarsForPlant ...

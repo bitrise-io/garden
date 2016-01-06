@@ -24,9 +24,10 @@ func reapThisPlant(plantID string, gardenMap config.GardenMapModel, cmdParams Re
 		return fmt.Errorf("reapThisPlant: can't find Plant with ID: %s", plantID)
 	}
 
-	absPlantDirPath, err := pathutil.AbsPath(plant.Path)
+	expandedPlantPath := plant.ExpandedPath(plantID)
+	absPlantDirPath, err := pathutil.AbsPath(expandedPlantPath)
 	if err != nil {
-		return fmt.Errorf("Failed to get Absolute Path of Plant (path:%s), error: %s", plant.Path, err)
+		return fmt.Errorf("Failed to get Absolute Path of Plant (path:%s), error: %s", expandedPlantPath, err)
 	}
 
 	cmd := exec.Command(cmdParams.Command, cmdParams.CommandArgs...)
