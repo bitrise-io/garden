@@ -111,3 +111,63 @@ workflows:
             CI FAILED on branch: *${BITRISE_GIT_BRANCH}*
 
             Build URL: ${BITRISE_BUILD_URL}
+
+  create-binaries-in-tmp-bins:
+    steps:
+    - script:
+        inputs:
+        - content: |-
+            #!/bin/bash
+            set -e
+            set -x
+
+            export ARCH=x86_64
+            export GOARCH=amd64
+
+            export OS=Darwin
+            export GOOS=darwin
+            deploy_pth="./_bin/tmp-bins/$BITRISE_BIN_NAME-$OS-$ARCH"
+            go build -o "$deploy_pth"
+
+            export OS=Linux
+            export GOOS=linux
+            deploy_pth="./_bin/tmp-bins/$BITRISE_BIN_NAME-$OS-$ARCH"
+            go build -o "$deploy_pth"
+
+  create-release:
+    before_run:
+    - test
+    - create-binaries-in-tmp-bins
+    steps:
+    - script:
+        title: Creating deploy
+        inputs:
+        - content: |-
+            #!/bin/bash
+            set -v
+            set -e
+
+            tmpbin_path="./_bin/tmp-bins/$BITRISE_BIN_NAME-$(uname -s)-$(uname -m)"
+
+            binversion="$($tmpbin_path -version)"
+            echo "binversion: ${binversion}"
+            finaldirpth=_bin/${binversion}
+            mkdir -p "$finaldirpth"
+
+            echo "finaldirpth: ${finaldirpth}"
+            cp ./_bin/tmp-bins/$BITRISE_BIN_NAME-* ${finaldirpth}/
+
+            # register the version for next steps
+            envman add --key RELEASE_VERSION --value "${binversion}"
+    - script:
+        title: Creating release changelog template
+        inputs:
+        - content: |-
+            changelog_path = "./_changelogs/#{ENV['RELEASE_VERSION']}.md"
+            puts " * changelog_path: #{changelog_path}"
+            template_content = File.read("./_changelogs/template.md")
+            changelog_content = template_content.gsub("{{version}}", ENV['RELEASE_VERSION'])
+            File.open(changelog_path, "w") do |f|
+              f.write(changelog_content)
+            end
+        - runner_bin: ruby
