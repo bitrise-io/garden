@@ -32,7 +32,7 @@ func view(c *cli.Context) {
 	}
 	log.Infoln("Viewing", viewingWhat)
 
-	gardenMap, _, err := loadGardenMap("")
+	gardenMap, _, err := config.LoadGardenMap("")
 	if err != nil {
 		log.Fatalf("Failed to load Garden Map: %s", err)
 	}

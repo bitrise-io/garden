@@ -19,7 +19,7 @@ const (
 )
 
 func loadTestGardenMap() (config.GardenMapModel, string, error) {
-	gardenMap, gardenDirAbsPth, err := loadGardenMap(testGardenDirPath)
+	gardenMap, gardenDirAbsPth, err := config.LoadGardenMap(testGardenDirPath)
 	if err != nil {
 		return config.GardenMapModel{}, "", fmt.Errorf("Failed to load Garden Map: %s", err)
 	}
@@ -62,7 +62,7 @@ func Test_growPlants(t *testing.T) {
 	gardenMap = fixPlantPathForTest(gardenMap, absPlantRootPath)
 	t.Logf("-> gardenMap: %#v", gardenMap)
 
-	err = growPlants(absTestGardenDirPath, gardenMap.Plants)
+	err = growPlants(absTestGardenDirPath, gardenMap, gardenMap.FilteredPlantsIDs("", ""))
 	require.NoError(t, err)
 
 	// Apple-1
@@ -75,14 +75,16 @@ func Test_growPlants(t *testing.T) {
 	testFileContent(t, path.Join(appleOneDirPth, "templated-file.txt"), `Apples - this is a templated file.
 
 Temp:  T1 |
-Value of MyVar1: my value 1
+Value of MyVar1: my value - for var 1
+IsItAFruit: this is a fruit
+IsApples: yes
 `)
 	// template 2, in a subdir of plant
 	testFileContent(t, path.Join(appleOneDirPth, "subdir", "tempinsub"), `Apples - this is a templated file, in a sub directory.
 
 Temp:  T1 |
 Temp: |
-Value of MyVar1: my value 1
+Value of MyVar1: my value - for var 1
 `)
 
 	// Orange-1
@@ -96,7 +98,9 @@ Value of MyVar1: my value 1
 
 Temp:  T1 |
 Value of MyVar1: my value - for var 1
-Value of MyVar2: var 2
+Value of MyVar2: my value - for var 2
+IsItAFruit: this is a fruit
+IsApples: no
 `)
 
 }

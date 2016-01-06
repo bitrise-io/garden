@@ -87,10 +87,15 @@ func replaceTemplateFilesInDir(dirPth string, plantVars map[string]string) error
 	return nil
 }
 
-func growPlant(gardenDirAbsPth, plantID string, plantModel config.PlantModel) error {
+func growPlant(plantID string, gardenMap config.GardenMapModel, gardenDirAbsPth string) error {
 	fmt.Println()
 	log.Println(colorstring.Yellow("==> growing plant:"), colorstring.Green(plantID))
 	log.Println("🌱")
+
+	plantModel, isFound := gardenMap.Plants[plantID]
+	if !isFound {
+		return fmt.Errorf("growPlant: can't find Plant with ID: %s", plantID)
+	}
 
 	log.Println("--> Checking seed: ", plantModel.Seed, "...")
 	seedDirFullPth, err := checkSeedDir(gardenDirAbsPth, plantModel.Seed)
@@ -112,7 +117,11 @@ func growPlant(gardenDirAbsPth, plantID string, plantModel config.PlantModel) er
 	}
 
 	log.Println("--> Handling templates ...")
-	if err := replaceTemplateFilesInDir(tmpSeedPth, plantModel.Vars); err != nil {
+	allPlantVars, err := gardenMap.CollectAllVarsForPlant(plantID)
+	if err != nil {
+		return fmt.Errorf("growPlant: failed to collect Vars for Plant (id: %s), error: %s", plantID, err)
+	}
+	if err := replaceTemplateFilesInDir(tmpSeedPth, allPlantVars); err != nil {
 		return fmt.Errorf("Failed to handle templates in temp seed dir (path:%s), error: %s", tmpSeedPth, err)
 	}
 
@@ -142,9 +151,9 @@ func growPlant(gardenDirAbsPth, plantID string, plantModel config.PlantModel) er
 	return nil
 }
 
-func growPlants(gardenDirAbsPth string, plantsMap config.PlantsMap) error {
-	for plantID, plantModel := range plantsMap {
-		if err := growPlant(gardenDirAbsPth, plantID, plantModel); err != nil {
+func growPlants(gardenDirAbsPth string, gardenMap config.GardenMapModel, plantsToGrowIDs []string) error {
+	for _, plantID := range plantsToGrowIDs {
+		if err := growPlant(plantID, gardenMap, gardenDirAbsPth); err != nil {
 			return err
 		}
 	}
@@ -154,16 +163,16 @@ func growPlants(gardenDirAbsPth string, plantsMap config.PlantsMap) error {
 func grow(c *cli.Context) {
 	log.Infoln("Grow")
 
-	gardenMap, gardenDirAbsPth, err := loadGardenMap("")
+	gardenMap, gardenDirAbsPth, err := config.LoadGardenMap("")
 	if err != nil {
 		log.Fatalf("Failed to load Garden Map: %s", err)
 	}
 
-	plantsToGrow := gardenMap.FilteredPlants(WorkWithPlantID, WorkWithZone)
-	if len(plantsToGrow) < 1 {
+	plantsToGrowIDs := gardenMap.FilteredPlantsIDs(WorkWithPlantID, WorkWithZone)
+	if len(plantsToGrowIDs) < 1 {
 		log.Fatalln("No plants to grow!")
 	}
-	if err := growPlants(gardenDirAbsPth, plantsToGrow); err != nil {
+	if err := growPlants(gardenDirAbsPth, gardenMap, plantsToGrowIDs); err != nil {
 		log.Fatalf("Failed to grow plants: %s", err)
 	}
 }

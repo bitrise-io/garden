@@ -3,16 +3,24 @@ plants:
     path: PLANTROOT/apple-1-dir
     seed: apples
     vars:
-      MyVar1: "my value 1"
+      MyVar1: "my value - for var 1"
     zones:
+    - fruits
     - apples
-    - test
   orange-1:
     path: PLANTROOT/orange-1-dir
     seed: oranges
     vars:
       MyVar1: "my value - for var 1"
-      MyVar2: "var 2"
+      MyVar2: "my value - for var 2"
     zones:
+    - fruits
     - oranges
-    - test
+zones:
+  fruits:
+    vars:
+      IsItAFruit: "this is a fruit"
+      IsApples: "no"
+  apples:
+    vars:
+      IsApples: "yes"
