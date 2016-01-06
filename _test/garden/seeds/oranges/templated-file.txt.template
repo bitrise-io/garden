@@ -6,3 +6,4 @@ Value of MyVar2: {{ var "MyVar2" }}
 IsItAFruit: {{ var "IsItAFruit" }}
 IsApples: {{ var "IsApples" }}
 PlantID: {{ .PlantID }}
+PlantPath: {{ .PlantPath }}

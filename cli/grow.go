@@ -18,9 +18,10 @@ import (
 
 // GrowInventoryModel ...
 type GrowInventoryModel struct {
-	Vars     map[string]string
-	TestBool bool
-	PlantID  string
+	Vars      map[string]string
+	TestBool  bool
+	PlantID   string
+	PlantPath string
 }
 
 // evaluateAndReplaceTemplateFile ...
@@ -116,14 +117,20 @@ func growPlant(plantID string, gardenMap config.GardenMapModel, gardenDirAbsPth 
 	}
 
 	log.Println("--> Handling templates ...")
+	expandedPlantPath := plantModel.ExpandedPath(plantID)
+	absPlantPath, err := pathutil.AbsPath(expandedPlantPath)
+	if err != nil {
+		return fmt.Errorf("Failed to get Absolute path of plant (path:%s), error: %s", expandedPlantPath, err)
+	}
 	collectedPlantVars, err := gardenMap.CollectAllVarsForPlant(plantID)
 	if err != nil {
 		return fmt.Errorf("growPlant: failed to collect Vars for Plant (id: %s), error: %s", plantID, err)
 	}
 	templateInventory := GrowInventoryModel{
-		TestBool: true,
-		Vars:     collectedPlantVars,
-		PlantID:  plantID,
+		TestBool:  true,
+		Vars:      collectedPlantVars,
+		PlantID:   plantID,
+		PlantPath: absPlantPath,
 	}
 
 	if err := replaceTemplateFilesInDir(tmpSeedPth, templateInventory); err != nil {
@@ -131,11 +138,6 @@ func growPlant(plantID string, gardenMap config.GardenMapModel, gardenDirAbsPth 
 	}
 
 	log.Println("--> Moving plant to it's final place in the garden ...")
-	expandedPlantPath := plantModel.ExpandedPath(plantID)
-	absPlantPath, err := pathutil.AbsPath(expandedPlantPath)
-	if err != nil {
-		return fmt.Errorf("Failed to get Absolute path of plant (path:%s), error: %s", expandedPlantPath, err)
-	}
 	log.Println("    Plant's final place: ", absPlantPath)
 	// only content of dir
 	output, err = cmdex.RunCommandAndReturnCombinedStdoutAndStderr("rsync",

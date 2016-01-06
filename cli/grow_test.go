@@ -81,6 +81,7 @@ Value of MyVar1: my value - for var 1
 IsItAFruit: this is a fruit
 IsApples: yes
 PlantID: apple-1
+PlantPath: `+appleOneDirPth+`
 `)
 	// template 2, in a subdir of plant
 	testFileContent(t, path.Join(appleOneDirPth, "subdir", "tempinsub"), `Apples - this is a templated file, in a sub directory.
@@ -105,6 +106,7 @@ Value of MyVar2: my value - for var 2
 IsItAFruit: this is a fruit
 IsApples: no
 PlantID: orange-1
+PlantPath: `+orangeOneDirPth+`
 `)
 
 }
