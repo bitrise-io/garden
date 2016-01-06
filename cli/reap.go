@@ -18,7 +18,12 @@ type ReapCommandParams struct {
 	CommandArgs []string
 }
 
-func reapThisPlant(plant config.PlantModel, cmdParams ReapCommandParams) error {
+func reapThisPlant(plantID string, gardenMap config.GardenMapModel, cmdParams ReapCommandParams) error {
+	plant, isFound := gardenMap.Plants[plantID]
+	if !isFound {
+		return fmt.Errorf("reapThisPlant: can't find Plant with ID: %s", plantID)
+	}
+
 	absPlantDirPath, err := pathutil.AbsPath(plant.Path)
 	if err != nil {
 		return fmt.Errorf("Failed to get Absolute Path of Plant (path:%s), error: %s", plant.Path, err)
@@ -32,9 +37,15 @@ func reapThisPlant(plant config.PlantModel, cmdParams ReapCommandParams) error {
 	// envs
 	envsToAdd := []string{}
 	// defaults
-	envsToAdd = append(envsToAdd, fmt.Sprintf("_GARDEN_PLANTDIR=%s", absPlantDirPath))
+	envsToAdd = append(envsToAdd, fmt.Sprintf("_GARDEN_PLANT_DIR=%s", absPlantDirPath))
+	envsToAdd = append(envsToAdd, fmt.Sprintf("_GARDEN_PLANT_ID=%s", plantID))
 	// Vars
-	for key, val := range plant.Vars {
+	allPlantVars, err := gardenMap.CollectAllVarsForPlant(plantID)
+	if err != nil {
+		return fmt.Errorf("reapThisPlant: failed to collect Vars for Plant (id: %s), error: %s", plantID, err)
+	}
+	log.Debugf("allPlantVars: %#v", allPlantVars)
+	for key, val := range allPlantVars {
 		envsToAdd = append(envsToAdd, fmt.Sprintf("_GARDENVAR_%s=%s", key, val))
 	}
 	cmd.Env = append(os.Environ(), envsToAdd...)
@@ -42,11 +53,11 @@ func reapThisPlant(plant config.PlantModel, cmdParams ReapCommandParams) error {
 	return cmd.Run()
 }
 
-func reapPlants(plants config.PlantsMap, cmdParams ReapCommandParams) error {
-	for plantID, plantModel := range plants {
+func reapPlants(plantIDs []string, gardenMap config.GardenMapModel, cmdParams ReapCommandParams) error {
+	for _, plantID := range plantIDs {
 		fmt.Println()
 		log.Infof("🚜  -> Reaping plant: %s", colorstring.Green(plantID))
-		if err := reapThisPlant(plantModel, cmdParams); err != nil {
+		if err := reapThisPlant(plantID, gardenMap, cmdParams); err != nil {
 			return fmt.Errorf("Failed to reap plant (id:%s), error: %s", plantID, err)
 		}
 	}
@@ -73,11 +84,11 @@ func reap(c *cli.Context) {
 		log.Fatalf("Failed to load Garden Map: %s", err)
 	}
 
-	plantsToGrow := gardenMap.FilteredPlants(WorkWithPlantID, WorkWithZone)
-	if len(plantsToGrow) < 1 {
+	plantsToGrowIDs := gardenMap.FilteredPlantsIDs(WorkWithPlantID, WorkWithZone)
+	if len(plantsToGrowIDs) < 1 {
 		log.Fatalln("No plants to grow!")
 	}
-	if err := reapPlants(plantsToGrow, cmdParams); err != nil {
+	if err := reapPlants(plantsToGrowIDs, gardenMap, cmdParams); err != nil {
 		log.Fatalf("Failed to grow plants: %s", err)
 	}
 }

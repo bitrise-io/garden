@@ -17,6 +17,7 @@ Reap can access the Vars of the Plant as Environment Variables,
 in the following form: `_GARDENVAR_[the-Var-id]`, as well as
 a couple of built-in Environment Variables:
 
-* `_GARDEN_PLANTDIR` : the Absolute Directory Path of the Plant
+* `_GARDEN_PLANT_DIR` : the Absolute Directory Path of the Plant
+* `_GARDEN_PLANT_ID` : ID of the Plant
 
 You can test & view your garden with `garden view`.
