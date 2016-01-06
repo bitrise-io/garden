@@ -26,7 +26,7 @@ func Test_reapPlants(t *testing.T) {
 	require.NoError(t, err)
 
 	// check reap outputs
-	reapOutputFormat := `_GARDEN_PLANT_DIR: %s
+	reapOutputFormat := `_GARDEN_PLANT_PATH: %s
 _GARDEN_PLANT_ID: %s
 MyVar1: %s
 MyVar2: %s

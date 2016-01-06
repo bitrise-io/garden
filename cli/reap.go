@@ -38,7 +38,7 @@ func reapThisPlant(plantID string, gardenMap config.GardenMapModel, cmdParams Re
 	// envs
 	envsToAdd := []string{}
 	// defaults
-	envsToAdd = append(envsToAdd, fmt.Sprintf("_GARDEN_PLANT_DIR=%s", absPlantDirPath))
+	envsToAdd = append(envsToAdd, fmt.Sprintf("_GARDEN_PLANT_PATH=%s", absPlantDirPath))
 	envsToAdd = append(envsToAdd, fmt.Sprintf("_GARDEN_PLANT_ID=%s", plantID))
 	// Vars
 	allPlantVars, err := gardenMap.CollectAllVarsForPlant(plantID)
