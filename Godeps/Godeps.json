@@ -11,6 +11,10 @@
 			"Rev": "446d1c146faa8ed3f4218f056fcd165f6bcfda81"
 		},
 		{
+			"ImportPath": "github.com/bitrise-io/go-utils/builtinutil",
+			"Rev": "91d23aedf33f0cedf4aec23ab717fd3e053e6cec"
+		},
+		{
 			"ImportPath": "github.com/bitrise-io/go-utils/cmdex",
 			"Rev": "91d23aedf33f0cedf4aec23ab717fd3e053e6cec"
 		},
@@ -35,9 +39,31 @@
 			"Rev": "91d23aedf33f0cedf4aec23ab717fd3e053e6cec"
 		},
 		{
+			"ImportPath": "github.com/bitrise-io/go-utils/testutil",
+			"Rev": "91d23aedf33f0cedf4aec23ab717fd3e053e6cec"
+		},
+		{
 			"ImportPath": "github.com/codegangsta/cli",
 			"Comment": "1.2.0-187-gc31a797",
 			"Rev": "c31a7975863e7810c92e2e288a9ab074f9a88f29"
+		},
+		{
+			"ImportPath": "github.com/davecgh/go-spew/spew",
+			"Rev": "5215b55f46b2b919f50a1df0eaa5886afe4e3b3d"
+		},
+		{
+			"ImportPath": "github.com/pmezard/go-difflib/difflib",
+			"Rev": "e8554b8641db39598be7f6342874b958f12ae1d4"
+		},
+		{
+			"ImportPath": "github.com/stretchr/testify/assert",
+			"Comment": "v1.0-91-g5b9da39",
+			"Rev": "5b9da39b66e8e994455c2525c4421c8cc00a7f93"
+		},
+		{
+			"ImportPath": "github.com/stretchr/testify/require",
+			"Comment": "v1.0-91-g5b9da39",
+			"Rev": "5b9da39b66e8e994455c2525c4421c8cc00a7f93"
 		},
 		{
 			"ImportPath": "golang.org/x/sys/unix",
