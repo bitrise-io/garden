@@ -14,7 +14,12 @@ func printGardenMapView(gardenMap config.GardenMapModel, plantIDFilter string, p
 	log.Println("=== Plants ===")
 	for plantID, plantModel := range gardenMap.FilteredPlants(plantIDFilter, plantZoneFilter) {
 		log.Println("🌱 ", colorstring.Green(plantID))
-		log.Printf("   path: %s / expanded: %s", plantModel.Path, plantModel.ExpandedPath(plantID))
+
+		log.Printf("   path: %s", plantModel.Path)
+		expandedPath := plantModel.ExpandedPath(plantID)
+		if expandedPath != plantModel.Path {
+			log.Printf("    %s: %s", colorstring.Yellow("-> expanded"), expandedPath)
+		}
 		log.Println("   seed:", plantModel.Seed)
 		log.Println("   vars:", plantModel.Vars)
 		log.Println("   zones:", plantModel.Zones)
