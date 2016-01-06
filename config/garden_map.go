@@ -120,18 +120,19 @@ func (gardenMap GardenMapModel) plantsFilteredByZone(zone string) PlantsMap {
 }
 
 func checkGardenDirPath(relPth string) (string, string, error) {
-	isEx, err := pathutil.IsDirExists(relPth)
+	absPth, err := pathutil.AbsPath(relPth)
 	if err != nil {
 		return "", "", err
 	}
-	if isEx {
-		absPth, err := pathutil.AbsPath(relPth)
-		if err != nil {
-			return "", "", err
-		}
-		return relPth, absPth, nil
+
+	isEx, err := pathutil.IsDirExists(absPth)
+	if err != nil {
+		return "", "", err
 	}
-	return "", "", nil
+	if !isEx {
+		return "", "", nil
+	}
+	return relPth, absPth, nil
 }
 
 // FindGardenDirPath ...
