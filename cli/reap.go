@@ -65,6 +65,15 @@ func reapPlants(plantIDs []string, gardenMap config.GardenMapModel, cmdParams Re
 	return nil
 }
 
+func printPlantsReadyForReap(plantsToReapIDs []string) {
+	fmt.Println()
+	log.Infof(colorstring.Blue("Plants ready to reap:"))
+	for _, aPlantID := range plantsToReapIDs {
+		log.Printf(" * %s", colorstring.Green(aPlantID))
+	}
+	fmt.Println()
+}
+
 func reap(c *cli.Context) {
 	log.Infoln("Reap")
 
@@ -89,6 +98,9 @@ func reap(c *cli.Context) {
 	if len(plantsToGrowIDs) < 1 {
 		log.Fatalln("No plants to grow!")
 	}
+
+	printPlantsReadyForReap(plantsToGrowIDs)
+
 	if err := reapPlants(plantsToGrowIDs, gardenMap, cmdParams); err != nil {
 		log.Fatalf("Failed to grow plants: %s", err)
 	}
