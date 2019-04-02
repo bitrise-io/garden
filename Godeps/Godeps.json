@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/bitrise-tools/garden",
+	"ImportPath": "github.com/bitrise-io/garden",
 	"GoVersion": "go1.5",
 	"Packages": [
 		"./..."

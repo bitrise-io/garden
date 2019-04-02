@@ -9,7 +9,7 @@
 To install this version, run the following commands (in a bash shell):
 
 ```
-curl -fL https://github.com/bitrise-tools/garden/releases/download/{{version}}/garden-$(uname -s)-$(uname -m) > /usr/local/bin/garden
+curl -fL https://github.com/bitrise-io/garden/releases/download/{{version}}/garden-$(uname -s)-$(uname -m) > /usr/local/bin/garden
 ```
 
 Then:

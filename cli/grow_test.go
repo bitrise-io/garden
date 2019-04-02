@@ -10,7 +10,7 @@ import (
 
 	"github.com/bitrise-io/go-utils/fileutil"
 	"github.com/bitrise-io/go-utils/pathutil"
-	"github.com/bitrise-tools/garden/config"
+	"github.com/bitrise-io/garden/config"
 	"github.com/stretchr/testify/require"
 )
 
